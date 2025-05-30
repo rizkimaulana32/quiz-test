@@ -32,7 +32,7 @@ export const DashboardPage = () => {
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("quizProgress");
     navigate("/");
   };
