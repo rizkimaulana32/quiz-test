@@ -20,7 +20,7 @@ export const QuizPage = () => {
   const [attemptedCount, setAttemptedCount] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState(20);
+  const [timeLeft, setTimeLeft] = useState(300);
 
   const currentQuestion = quizData[currentIndex];
 
