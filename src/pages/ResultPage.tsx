@@ -28,10 +28,9 @@ export const ResultPage = () => {
   const percentage = Math.round((results.correct / results.total) * 100);
 
   const handleOnResetQuiz = () => {
-    localStorage.removeItem("quizProgress");
     navigate("/dashboard");
   };
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <Card className="w-full max-w-lg">

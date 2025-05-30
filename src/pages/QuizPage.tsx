@@ -17,9 +17,10 @@ export const QuizPage = () => {
   const [loading, setLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
+  const [attemptedCount, setAttemptedCount] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState(300);
+  const [timeLeft, setTimeLeft] = useState(20);
 
   const currentQuestion = quizData[currentIndex];
 
@@ -69,6 +70,7 @@ export const QuizPage = () => {
       if (parsed.score) setScore(parsed.score);
       if (parsed.selectedAnswer) setSelectedAnswer(parsed.selectedAnswer);
       if (parsed.timeLeft) setTimeLeft(parsed.timeLeft);
+      if (parsed.attemptedCount) setAttemptedCount(parsed.attemptedCount);
     } else {
       fetchQuizData();
     }
@@ -83,23 +85,34 @@ export const QuizPage = () => {
       score,
       selectedAnswer,
       timeLeft,
+      attemptedCount, 
     };
     localStorage.setItem("quizProgress", JSON.stringify(progress));
-  }, [quizData, currentIndex, score, selectedAnswer, timeLeft]);
+  }, [quizData, currentIndex, score, selectedAnswer, timeLeft, attemptedCount]);
 
-  const handleQuizFinish = useCallback(() => {
-    const resultData = {
-      correct: score,
-      incorrect: quizData.length - score,
-      attempted: currentIndex,
-      total: quizData.length,
-    };
+  const handleQuizFinish = useCallback(
+    (finalAttemptedCount?: number) => {
+      const finalAttempted = finalAttemptedCount || attemptedCount;
 
-    navigate("/result", { state: { results: resultData } });
-  }, [score, quizData.length, navigate, currentIndex]);
+      const resultData = {
+        correct: score,
+        incorrect: finalAttempted - score,
+        attempted: finalAttempted,
+        total: quizData.length,
+      };
+
+      localStorage.removeItem("quizProgress");
+      navigate("/result", { state: { results: resultData } });
+    },
+    [score, quizData.length, navigate, attemptedCount]
+  );
 
   const handleAnswerSelect = (value: string) => {
     setSelectedAnswer(value);
+
+    const newAttemptedCount = attemptedCount + 1;
+    setAttemptedCount(newAttemptedCount);
+
     if (value === currentQuestion.correct_answer) {
       setScore((prev) => prev + 1);
     }
@@ -109,7 +122,7 @@ export const QuizPage = () => {
       if (currentIndex < quizData.length - 1) {
         setCurrentIndex((prev) => prev + 1);
       } else {
-        handleQuizFinish();
+        handleQuizFinish(newAttemptedCount);
       }
     }, 1000);
   };
