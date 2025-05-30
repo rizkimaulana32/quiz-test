@@ -101,7 +101,6 @@ export const QuizPage = () => {
         total: quizData.length,
       };
 
-      localStorage.removeItem("quizProgress");
       navigate("/result", { state: { results: resultData } });
     },
     [score, quizData.length, navigate, attemptedCount]

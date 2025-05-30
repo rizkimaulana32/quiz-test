@@ -28,6 +28,7 @@ export const ResultPage = () => {
   const percentage = Math.round((results.correct / results.total) * 100);
 
   const handleOnResetQuiz = () => {
+    localStorage.removeItem("quizProgress");
     navigate("/dashboard");
   };
 
